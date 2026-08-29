@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Civic AI Priority Engine</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f5f7;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+        }
+
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            margin-top: 8px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            resize: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+            background: #222;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        #result {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f5f5f5;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 45px;
+            font-weight: bold;
+        }
+
+        .level {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .details {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🤖 Civic AI Priority Engine</h1>
+
+    <p class="subtitle">
+        AI-powered civic problem prioritization
+    </p>
+
+    <label>Describe the civic problem</label>
+
+    <textarea id="problem"
+        placeholder="Example: Huge pothole near college gate. Hundreds of students and vehicles use this road every day.">
+    </textarea>
+
+    <label>Severity (0–100)</label>
+    <input type="number" id="severity" min="0" max="100" value="50">
+
+    <label>People Affected (0–100)</label>
+    <input type="number" id="impact" min="0" max="100" value="50">
+
+    <label>Frequency (0–100)</label>
+    <input type="number" id="frequency" min="0" max="100" value="50">
+
+    <label>Urgency (0–100)</label>
+    <input type="number" id="urgency" min="0" max="100" value="50">
+
+   <button onclick="analyzeProblem()">
+    🤖 Analyze Problem
+</button>
+
+    <div id="result">
+
+        <h2>Priority Result</h2>
+
+        <div class="score" id="score"></div>
+
+        <div class="level" id="level"></div>
+
+        <div class="details">
+            <p>Severity: <span id="showSeverity"></span></p>
+            <p>People affected: <span id="showImpact"></span></p>
+            <p>Frequency: <span id="showFrequency"></span></p>
+            <p>Urgency: <span id="showUrgency"></span></p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+async function analyzeProblem() {
+    const problem = document.getElementById("problem").value;
+    const severity = document.getElementById("severity").value;
+    const impact = document.getElementById("impact").value;
+    const frequency = document.getElementById("frequency").value;
+    const urgency = document.getElementById("urgency").value;
+
+    try {
+        const response = await fetch("/api/analyze", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                problem,
+                severity,
+                impact,
+                frequency,
+                urgency
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "AI analysis failed");
+        }
+
+        alert("AI Analysis:\n\n" + data.analysis);
+
+    } catch (error) {
+        console.error(error);
+        alert("Could not connect to the AI server.");
+    }
+}
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Civic Priority AI</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f5f7;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+        }
+
+        .problem-card {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        .inputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            background: #222;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        .remove-btn {
+            background: #b00020;
+        }
+
+        #results {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            margin-top: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .rank {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .score {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .critical {
+            color: #b00020;
+        }
+
+        .high {
+            color: #d46b00;
+        }
+
+        .medium {
+            color: #b08b00;
+        }
+
+        .low {
+            color: green;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>🤖 Civic Priority AI</h1>
+
+    <p class="subtitle">
+        Add multiple civic problems and let the system decide what should be solved first.
+    </p>
+
+
+    <div id="problems">
+
+        <div class="problem-card">
+
+            <h3>Problem 1</h3>
+
+            <textarea
+                class="description"
+                placeholder="Describe the civic problem...">
+            </textarea>
+
+            <div class="inputs">
+
+                <input
+                    type="number"
+                    class="severity"
+                    placeholder="Severity (0-100)"
+                    min="0"
+                    max="100">
+
+                <input
+                    type="number"
+                    class="impact"
+                    placeholder="Impact (0-100)"
+                    min="0"
+                    max="100">
+
+                <input
+                    type="number"
+                    class="frequency"
+                    placeholder="Frequency (0-100)"
+                    min="0"
+                    max="100">
+
+                <input
+                    type="number"
+                    class="urgency"
+                    placeholder="Urgency (0-100)"
+                    min="0"
+                    max="100">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <button onclick="addProblem()">
+        ➕ Add Another Problem
+    </button>
+
+    <button onclick="prioritizeProblems()">
+        🎯 Prioritize All Problems
+    </button>
+
+
+    <div id="results"></div>
+
+</div>
+
+
+<script>
+
+let problemCount = 1;
+
+
+// Add another problem
+function addProblem() {
+
+    problemCount++;
+
+    const container = document.getElementById("problems");
+
+    const card = document.createElement("div");
+
+    card.className = "problem-card";
+
+    card.innerHTML = `
+
+        <h3>Problem ${problemCount}</h3>
+
+        <textarea
+            class="description"
+            placeholder="Describe the civic problem..."></textarea>
+
+        <div class="inputs">
+
+            <input
+                type="number"
+                class="severity"
+                placeholder="Severity (0-100)"
+                min="0"
+                max="100">
+
+            <input
+                type="number"
+                class="impact"
+                placeholder="Impact (0-100)"
+                min="0"
+                max="100">
+
+            <input
+                type="number"
+                class="frequency"
+                placeholder="Frequency (0-100)"
+                min="0"
+                max="100">
+
+            <input
+                type="number"
+                class="urgency"
+                placeholder="Urgency (0-100)"
+                min="0"
+                max="100">
+
+        </div>
+
+        <button class="remove-btn" onclick="this.parentElement.remove()">
+            Remove
+        </button>
+    `;
+
+    container.appendChild(card);
+}
+
+
+// Send all problems to backend
+async function prioritizeProblems() {
+
+    const cards = document.querySelectorAll(".problem-card");
+
+    const problems = [];
+
+    cards.forEach(card => {
+
+        const description =
+            card.querySelector(".description").value;
+
+        const severity =
+            card.querySelector(".severity").value;
+
+        const impact =
+            card.querySelector(".impact").value;
+
+        const frequency =
+            card.querySelector(".frequency").value;
+
+        const urgency =
+            card.querySelector(".urgency").value;
+
+
+        if (description.trim() !== "") {
+
+            problems.push({
+                description,
+                severity,
+                impact,
+                frequency,
+                urgency
+            });
+
+        }
+
+    });
+
+
+    if (problems.length === 0) {
+
+        alert("Please add at least one civic problem.");
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch("/api/analyze", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                problems
+            })
+
+        });
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+            alert(data.error);
+
+            return;
+        }
+
+
+        displayResults(data.problems);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Could not connect to the server.");
+
+    }
+
+}
+
+
+// Display ranked results
+function displayResults(problems) {
+
+    const results =
+        document.getElementById("results");
+
+    results.innerHTML = "<h2>🏆 Priority Ranking</h2>";
+
+
+    problems.forEach(problem => {
+
+        const level =
+            problem.priorityLevel.toLowerCase();
+
+
+        const card =
+            document.createElement("div");
+
+        card.className = "result-card";
+
+
+        card.innerHTML = `
+
+            <div class="rank">
+                #${problem.rank}
+            </div>
+
+            <h3>
+                ${problem.problemType}
+            </h3>
+
+            <p>
+                ${problem.description}
+            </p>
+
+            <div class="score">
+                ${problem.priorityScore}/100
+            </div>
+
+            <h3 class="${level}">
+                ${problem.priorityLevel}
+            </h3>
+
+            <p>
+                <strong>Severity:</strong>
+                ${problem.severity}
+            </p>
+
+            <p>
+                <strong>Impact:</strong>
+                ${problem.impact}
+            </p>
+
+            <p>
+                <strong>Frequency:</strong>
+                ${problem.frequency}
+            </p>
+
+            <p>
+                <strong>Urgency:</strong>
+                ${problem.urgency}
+            </p>
+
+            <hr>
+
+            <p>
+                🏛 <strong>Authority:</strong>
+                ${problem.authority}
+            </p>
+
+            <p>
+                ⚡ <strong>Recommended Action:</strong>
+                ${problem.action}
+            </p>
+
+        `;
+
+        results.appendChild(card);
+
+    });
+
+}
+
+</script>
+
+</body>
+
+</html>
